@@ -5,6 +5,11 @@ import re
 from collections import deque
 
 filepath = ""
+if len(sys.argv) < 2:
+    print ("Missing path as first argument.")
+    sys.exit(1)
+else:
+    filepath = sys.argv[1]
 
 OT_RDF = "<RDF:"
 CT_RDF = "</RDF:"
@@ -81,64 +86,54 @@ def rdfContext(openTAG, iLine):
             print (">>> Close RDF tag without open tag in line " + str(iLine))
             itrRDF = 0
 
-def main():
-    sys.stdout.write(datetime.datetime.now().strftime("%I:%M%p") + " Trying to open " + filepath + "...")
-    sys.stdout.flush()
-    try:
-        f = open(filepath, 'rt')
-    except:
-        print ("failed" + '\n' + datetime.datetime.now().strftime("%I:%M%p") + " Cannot open file: " + filepath)
-        return
+## MAIN
+print (datetime.datetime.now().strftime("%I:%M%p") + " Starting...")
+sys.stdout.write(datetime.datetime.now().strftime("%I:%M%p") + " Trying to open " + filepath + "...")
+sys.stdout.flush()
+try:
+    f = open(filepath, 'rt')
+except:
+    print ("failed" + '\n' + datetime.datetime.now().strftime("%I:%M%p") + " Cannot open file: " + filepath)
+    sys.exit(1)
 
-    print ("ok" + " (" + str(os.stat(filepath).st_size >> 10) + " KB)")
+print ("ok" + " (" + str(os.stat(filepath).st_size >> 10) + " KB)")
 
-    print (datetime.datetime.now().strftime("%I:%M%p") + " Start parsing...")
-    curLine = ""
-    i = 0
-    preContextList = deque(maxlen=15)
-    for line in f:
-        i = i + 1
+print (datetime.datetime.now().strftime("%I:%M%p") + " Start parsing...")
+curLine = ""
+i = 0
+preContextList = deque(maxlen=15)
+for line in f:
+    i = i + 1
 
-        curLine = str(line).upper()
-        preContextList.append(str(line))
-        if OT_RDF in curLine:
-            rdfContext(True, i)
+    curLine = str(line).upper()
+    preContextList.append(str(line))
+    if OT_RDF in curLine:
+        rdfContext(True, i)
 
-        if CT_RDF in curLine:
-            rdfContext(False, i)
+    if CT_RDF in curLine:
+        rdfContext(False, i)
 
-        if OT_CIM in curLine:
-            if cimContext(True, i) == -1:
-                print (">>> Error in line " + str(i) + ": ")
-                print (str(''.join(preContextList)))
-                f.close()
-                print (datetime.datetime.now().strftime("%I:%M%p") + "...Program stopped!")
-                sys.exit(1)
+    if OT_CIM in curLine:
+        if cimContext(True, i) == -1:
+            print (">>> Error in line " + str(i) + ": ")
+            print (str(''.join(preContextList)))
+            f.close()
+            print (datetime.datetime.now().strftime("%I:%M%p") + "...Program stopped!")
+            sys.exit(1)
 
-        if CT_CIM1 in curLine or CT_CIM2 in curLine:
-            cimContext(False, i)
+    if CT_CIM1 in curLine or CT_CIM2 in curLine:
+        cimContext(False, i)
 
-    print (datetime.datetime.now().strftime("%I:%M%p") + " ...parsing finished.")
+print (datetime.datetime.now().strftime("%I:%M%p") + " ...parsing finished.")
 
-    f.close()
+f.close()
 
-    print ("")
-    print (">File has " + str(i) + " lines.")
-    print (">RDF blocks: " + str(countRDFBlocks))
-    print (">CIM classes: " + str(countCIMClasses) + " (i.e. 1st level CIM blocks)")
-    print (">CIM attributes: " + str(countCIMAttribs) + " (i.e. 2nd level++ nested CIM blocks)")
-    if countNestedAttribs > 0 :
-        print (">>>Nested attributes: " + str(countNestedAttribs))
-    print ("")
+print ("")
+print (">File has " + str(i) + " lines.")
+print (">RDF blocks: " + str(countRDFBlocks))
+print (">CIM classes: " + str(countCIMClasses) + " (i.e. 1st level CIM blocks)")
+print (">CIM attributes: " + str(countCIMAttribs) + " (i.e. 2nd level++ nested CIM blocks)")
+if countNestedAttribs > 0 :
+    print (">>>Nested attributes: " + str(countNestedAttribs))
 
-
-
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print ("Missing path as first argument.")
-        sys.exit(1)
-    else:
-        filepath = sys.argv[1]
-    print (datetime.datetime.now().strftime("%I:%M%p") + " Starting...")
-    main()
-    print (datetime.datetime.now().strftime("%I:%M%p") + " ...done.")
+print (datetime.datetime.now().strftime("%I:%M%p") + " ...done.")
