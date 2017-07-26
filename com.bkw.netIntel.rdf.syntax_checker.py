@@ -4,9 +4,6 @@ import os
 import re
 from collections import deque
 
-
-#filepath = "P:\\BigData_Analytics\\08_Ergebnisse\\02_Datenabzug\\NetIntel\\NIS_CIM_Export_b4_20160224_V2.rdf"
-#filepath = "C:\\Temp\\bkw_cim_export_equipmentsstripe2_1.rdf"
 filepath = ""
 
 OT_RDF = "<RDF:"
