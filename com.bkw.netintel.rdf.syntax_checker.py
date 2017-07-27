@@ -6,7 +6,7 @@ from collections import deque
 
 filepath = ""
 if len(sys.argv) < 2:
-    print (">>> Error: Missing path as first argument.")
+    print (">>> Syntax checker - Error: Missing path as first argument.")
     sys.exit(1)
 else:
     filepath = sys.argv[1]
@@ -115,7 +115,7 @@ for line in f:
 
     if OT_CIM in curLine:
         if cimContext(True, i) == -1:
-            print (">>> Error: Line " + str(i) + ": ")
+            print (">>> Error: Line " + str(i) + " in file " + filepath + ": ")
             print (str('Error: '.join(preContextList)))
             f.close()
             print (datetime.datetime.now().strftime("%I:%M%p") + "...Program stopped!")
@@ -129,11 +129,11 @@ print (datetime.datetime.now().strftime("%I:%M%p") + " ...parsing finished.")
 f.close()
 
 print ("")
-print (">File has " + str(i) + " lines.")
-print (">RDF blocks: " + str(countRDFBlocks))
-print (">CIM classes: " + str(countCIMClasses) + " (i.e. 1st level CIM blocks)")
-print (">CIM attributes: " + str(countCIMAttribs) + " (i.e. 2nd level++ nested CIM blocks)")
+print ("> File has " + str(i) + " lines.")
+print ("> RDF blocks: " + str(countRDFBlocks))
+print ("> CIM classes: " + str(countCIMClasses) + " (i.e. 1st level CIM blocks)")
+print ("> CIM attributes: " + str(countCIMAttribs) + " (i.e. 2nd level++ nested CIM blocks)")
 if countNestedAttribs > 0 :
-    print (">>>Nested attributes: " + str(countNestedAttribs))
+    print (">>> Nested attributes: " + str(countNestedAttribs))
 
 print (datetime.datetime.now().strftime("%I:%M%p") + " ...done.")
