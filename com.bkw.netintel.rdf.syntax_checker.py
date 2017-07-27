@@ -101,7 +101,7 @@ print ("ok" + " (" + str(os.stat(filepath).st_size >> 10) + " KB)")
 print (datetime.datetime.now().strftime("%I:%M%p") + " Start parsing...")
 curLine = ""
 i = 0
-preContextList = deque(maxlen=15)
+preContextList = deque(maxlen=12)
 for line in f:
     i = i + 1
 
@@ -118,7 +118,7 @@ for line in f:
             print (">>> Error: Line " + str(i) + " in file " + filepath + ": ")
             print (str('Error: '.join(preContextList)))
             f.close()
-            print (datetime.datetime.now().strftime("%I:%M%p") + "...Program stopped!")
+            print (datetime.datetime.now().strftime("%I:%M%p") + "...Syntax check stopped for this file!")
             sys.exit(1)
 
     if CT_CIM1 in curLine or CT_CIM2 in curLine:
